@@ -1,0 +1,14 @@
+[project]
+name = "math-notes"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "catppuccin>=2.4.1",
+    "marimo>=0.14.8",
+    "matplotlib>=3.10.3",
+    "numpy>=2.3.1",
+    "ruff>=0.12.1",
+    "scipy>=1.16.0",
+]
