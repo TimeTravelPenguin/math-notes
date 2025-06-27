@@ -19,9 +19,6 @@ def _():
         mpl.style.use(catppuccin.PALETTE.mocha.identifier)
     else:
         mpl.style.use(catppuccin.PALETTE.latte.identifier)
-
-    # siunitx_path = Path("./siunitx/siunitx-v2.sty")
-    # mo.latex(filename=siunitx_path)
     return dataclass, mo, np, plt, solve_ivp
 
 
