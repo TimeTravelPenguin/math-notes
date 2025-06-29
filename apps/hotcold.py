@@ -181,10 +181,9 @@ def _(C, H, R, V0, t1):
     def ode(t, y):
         V, T = y
         dVdt = R
-        # dTdt = R / V * (T_in(t) - T)
         dTdt = R * (T_in(t) - T) / (V0 + R * t)
         return [dVdt, dTdt]
-    return (ode,)
+    return T_in, ode
 
 
 @app.cell
@@ -206,6 +205,8 @@ def _(dataclass):
         T0: float = 20.0  # Initial temperature of the water
         t_final: float = 10.0  # Total simulation time
         ode_method: str = OdeMethods.Radau  # ODE solver method to use
+        k: float = 0.1  # Cooling rate constant
+        T_m: float = 25.0  # Ambient temperature of the surrounding medium
 
 
     config = Config()
@@ -220,6 +221,7 @@ def _(OdeMethods, config, mo):
         step=0.001,
         value=config.R,
         label="Flow Rate ($R$)",
+        show_value=True,
     )
     sider_H = mo.ui.slider(
         start=10.0,
@@ -227,6 +229,7 @@ def _(OdeMethods, config, mo):
         step=1.0,
         value=config.H,
         label="Hot Water Temperature ($T_H$)",
+        show_value=True,
     )
     sider_C = mo.ui.slider(
         start=0.0,
@@ -234,6 +237,7 @@ def _(OdeMethods, config, mo):
         step=1.0,
         value=config.C,
         label="Cold Water Temperature ($T_C$)",
+        show_value=True,
     )
     sider_t1 = mo.ui.slider(
         start=0.0,
@@ -241,6 +245,7 @@ def _(OdeMethods, config, mo):
         step=0.1,
         value=config.t1,
         label="Time Switch ($t_1$)",
+        show_value=True,
     )
     sider_V0 = mo.ui.slider(
         start=0.01,
@@ -248,6 +253,7 @@ def _(OdeMethods, config, mo):
         step=0.1,
         value=config.V0,
         label="Initial Volume ($V_0$)",
+        show_value=True,
     )
     sider_T0 = mo.ui.slider(
         start=10.0,
@@ -255,6 +261,7 @@ def _(OdeMethods, config, mo):
         step=1.0,
         value=config.T0,
         label="Initial Temperature ($T_0$)",
+        show_value=True,
     )
     sider_t_final = mo.ui.slider(
         start=10.0,
@@ -262,6 +269,7 @@ def _(OdeMethods, config, mo):
         step=1.0,
         value=config.t_final,
         label="Total Simulation Time ($t_{final}$)",
+        show_value=True,
     )
     dropdown_ode_method = mo.ui.dropdown(
         options=[
@@ -329,7 +337,7 @@ def _(T0, V0, np, ode, ode_method, solve_ivp, t_final):
 
     # Solve the ODE system
     sol = solve_ivp(ode, (0, t_final), [V0, T0], t_eval=t_eval, method=ode_method)
-    return (sol,)
+    return sol, t_eval
 
 
 @app.cell
@@ -380,10 +388,7 @@ def _(mo):
     Which can be rewritten as:
 
     $$
-        \begin{gather*}
-            \frac{dT}{dt} = R \frac{T_{in}(t) - T(t)}{V_0 + Rt} \\
-            (V_0 + Rt) \frac{dT}{dt} + R T(t) = R T_{in}(t) \\
-        \end{gather*}
+        (V_0 + Rt) \frac{dT}{dt} + R T(t) = R T_{in}(t)
     $$
 
     Thus, we find:
@@ -464,7 +469,7 @@ def _(mo):
 def _(mo):
     mo.md(
         r"""
-    ## Final Result
+    ### Final Result
 
     By combing the results, we see that we have found:
 
@@ -510,6 +515,259 @@ def _(C, H, R, T0, V0, plt, sol, t1):
     _ax.set_title("Temperature vs Time (Numerical vs Analytical)")
     _ax.legend()
     _ax.grid()
+
+    _fig
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ## Extending the Model to Consider Heat Loss
+    <small><i>Updated: 2025/06/29</i></small>
+
+    Currently, this model fails to consider how the volume of water looses heat to the surrounding environment. We can extend the model by adding a cooling term to the temperature equation, as described earlier on Newton's law of cooling:
+
+    $$
+        \frac{dT}{dt} = R \frac{T_{in}(t) - T(t)}{V_0 + Rt} - k(T(t) - T_m)
+    $$
+
+    Here, $k$ is a constant that describes the rate of heat loss to the environment, and $T_m$ is the temperature of the surrounding medium. Now, we can carefully manipulate the equation in order to find a solution.
+
+    $$
+        \begin{align*}
+            \frac{dT}{dt} &= R \frac{T_{in}(t) - T(t)}{V_0 + Rt} - k(T(t) - T_m)\\
+            &= R \frac{T_{in}(t) - T(t)}{V(t)} - k(T(t) - T_m)\\
+            V(t) \frac{dT}{dt} &= R T_{in}(t) - R T(t) - k V(t)(T(t) - T_m)\\
+            &= R T_{in}(t) - R T(t) - k V(t) T(t) + k V(t) T_m
+        \end{align*}\\
+    $$
+
+    $$
+        \begin{align*}
+            V(t) \frac{dT}{dt} + (R + k V(t)) T(t) &= R T_{in}(t) + k V(t) T_m\\
+            \frac{dT}{dt} + \frac{R + k V(t)}{V(t)} T(t) &= \frac{R T_{in}(t) + k V(t) T_m}{V(t)}\\
+            \frac{dT}{dt} + \left(\frac{R}{V_0 + Rt} + k\right) T(t) &= \frac{R T_{in}(t)}{V_0 + Rt} + k T_m
+        \end{align*}
+    $$
+
+    Solving for the integrating factor, $\mu(t)$:
+
+    $$
+        \begin{align*}
+            \mu &= \exp{\left(\int\frac{R}{V_0 + Rt} + k\, dt\right)}\\
+                &= \exp{(\ln(V_0 + Rt) + kt)}\\
+                &= (V_0 + Rt)e^{kt}
+        \end{align*}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    And therefore, we can write our ODE as:
+
+    $$
+    \begin{align*}
+        \frac{d}{dt}\left[(V_0 + Rt)e^{kt} T(t) \right] &= R T_{in}(t) e^{kt} + k T_m (V_0 + Rt)e^{kt}
+    \end{align*}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ### Case 1: $\quad 0 \le t \le t_1$
+
+    As before, we can integrate both sides. Noting that for $t\in[0,t_1]$, $T_{in}(t)=T_H$, we find through integration by parts that:
+
+    $$
+        \begin{align*}
+            \int_0^{t} \frac{d}{dt}\left[(V_0 + Rt)e^{kt} T(t) \right] dt &= \int_0^{t} R T_{in}(t) e^{kt} + k T_m (V_0 + Rt)e^{kt} dt\\
+            &= \int_0^{t} \left[R T_H + k T_m (V_0 + Rt)\right] e^{kt} dt\\
+            &= \left.\left[ \frac{RT_H}{k} e^{kt} + k T_m \int (V_0 + Rt) e^{kt} dt \right]\right|_0^t\\
+            &= \left.\left[ \frac{RT_H}{k} e^{kt} + k T_m \left( \frac{V_0+Rt}{k}e^{kt} - \frac{R}{k^2} e^{kt} \right) \right]\right|_0^t\\
+            &= \left.\left[ \frac{RT_H}{k} e^{kt} + T_m \left( V(t) - \frac{R}{k} \right) e^{kt} \right]\right|_0^t\\
+            &= \left.\left[ \left(T_m V(t) + \frac{R}{k} (T_H - T_m) \right)e^{kt} \right]\right|_0^t\\
+            \therefore V(t)e^{kt}T(t) - V_0T_0 &= \left.\left[ \left(T_m V(t) + \frac{R}{k} (T_H - T_m) \right)e^{kt} \right]\right|_0^t\\
+            &= \left(T_m V(t) + \frac{R}{k} (T_H - T_m) \right)e^{kt} - T_m V_0 - \frac{R}{k} (T_H - T_m)\\
+            V(t)e^{kt}T(t) &= \left(T_m V(t) + \frac{R}{k} (T_H - T_m) \right)e^{kt} - V_0 (T_m - T_0) - \frac{R}{k} (T_H - T_m)\\
+            \therefore T(t) &= T_m + \frac{R}{kV(t)}(T_H-T_m) - \left( V_0 (T_m - T_0) + \frac{R}{k} (T_H - T_m) \right) \frac{e^{-kt}}{V(t)}\\
+            &= T_m + \frac{R}{kV(t)}(T_H-T_m) \left( 1 - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt}
+        \end{align*}
+    $$
+
+    So, therefore, for $0 \le t \le t_1$:
+
+    $$
+        T(t) = T_m + \frac{R}{kV(t)}(T_H-T_m) \left( 1 - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ### Case 2: $\quad t \ge t_1$
+
+    Simiularly, we can integrate as above, noting that for $t \in [t_1, \infty)$, $T_{in}(t)=T_C$:
+
+    $$
+        \begin{align*}
+            \int_{t_1}^{t} \frac{d}{dt}\left[(V_0 + Rt)e^{kt} T(t) \right] dt &= \left.\left[ \left(T_m V(t) + \frac{R}{k} (T_C - T_m) \right)e^{kt} \right]\right|^t_{t_1}\\
+            &= T_m V(t)e^{kt} + \frac{R}{k} (T_C - T_m) e^{kt} - T_m V(t_1)e^{kt_1} - \frac{R}{k} (T_C - T_m) e^{kt_1}\\
+            &= T_m \left(V(t)e^{kt} - V(t_1)e^{kt_1}\right) + \frac{R}{k} (T_C - T_m) \left( e^{kt} - e^{kt_1} \right)\\
+            \therefore V(t) e^{kt} T(t) - V(t_1)e^{kt_1}T_1 &= T_m \left(V(t)e^{kt} - V(t_1)e^{kt_1}\right) + \frac{R}{k} (T_C - T_m) \left( e^{kt} - e^{kt_1} \right)\\
+            \therefore T(t) &= T_m \left(1 - \frac{V(t_1)}{V(t)} e^{-k(t-t_1)}\right) + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{V(t_1)}{V(t)} T_1 e^{-k(t-t_1)}\\
+            &= T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{V(t_1)}{V(t)} e^{-k(t-t_1)} (T_1 - T_m)
+        \end{align*}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    Using the result from case 1, we can solve for $T_1 = T(t_1)$:
+
+    $$
+    \begin{align*}
+        T(t) &= T_m + \frac{R}{kV(t)}(T_H-T_m) \left( 1 - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt}\\
+        \therefore T(t_1) &= T_m + \frac{R}{kV(t_1)}(T_H-T_m) \left( 1 - e^{-kt_1} \right) -  \frac{V_0}{V(t_1)} (T_m - T_0) e^{-kt_1}
+    \end{align*}
+    $$
+
+    Now, substituting gives:
+
+    $$
+    \begin{align*}
+        T(t) &= T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{V(t_1)}{V(t)} e^{-k(t-t_1)} \left( \frac{R}{kV(t_1)}(T_H-T_m) \left( 1 - e^{-kt_1} \right) - \frac{V_0}{V(t_1)} (T_m - T_0) e^{-kt_1} \right)\\
+        &= T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{R}{kV(t)}(T_H-T_m) \left(e^{-k(t-t_1)}  - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt}
+    \end{align*}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ### Final Result
+
+    By combing the results, we see that we have found:
+
+    $$
+        T(t) = \begin{cases}
+            \displaystyle T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{V(t_1)}{V(t)} e^{-k(t-t_1)} (T_1 - T_m) & \text{if } 0 \le t \le t_1 \\[1.5em]
+            \displaystyle T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{R}{kV(t)}(T_H-T_m) \left(e^{-k(t-t_1)}  - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt} & \text{if } t \gt t_1
+        \end{cases}
+    $$
+    """
+    )
+    return
+
+
+@app.cell
+def _(R, T_in, T_m, k):
+    def ode_cooling(t, y):
+        V, T = y
+        dVdt = R
+        dTdt = R * (T_in(t) - T) / V - k * (T - T_m)
+        return [dVdt, dTdt]
+    return (ode_cooling,)
+
+
+@app.cell
+def _(
+    config,
+    dropdown_ode_method,
+    mo,
+    sider_C,
+    sider_H,
+    sider_R,
+    sider_T0,
+    sider_V0,
+    sider_t1,
+    sider_t_final,
+):
+    slider_k = mo.ui.slider(
+        start=0.001,
+        stop=1.0,
+        step=0.001,
+        value=config.k,
+        label="Cooling Rate ($k$)",
+        show_value=True,
+    )
+
+    slider_T_m = mo.ui.slider(
+        start=0.0,
+        stop=100.0,
+        step=1.0,
+        value=config.T_m,
+        label="Ambient Temperature of Medium ($T_m$)",
+        show_value=True,
+    )
+
+    cooling_controls = mo.vstack(
+        [
+            sider_R,
+            sider_H,
+            sider_C,
+            sider_t1,
+            sider_V0,
+            sider_T0,
+            sider_t_final,
+            slider_k,
+            slider_T_m,
+            dropdown_ode_method,
+        ]
+    )
+    return cooling_controls, slider_T_m, slider_k
+
+
+@app.cell
+def _(cooling_controls, slider_T_m, slider_k):
+    k = slider_k.value
+    T_m = slider_T_m.value
+
+
+    cooling_controls
+    return T_m, k
+
+
+@app.cell
+def _(T0, V0, ode_cooling, ode_method, plt, solve_ivp, t1, t_eval, t_final):
+    sol_cooling = solve_ivp(
+        ode_cooling, (0, t_final), [V0, T0], t_eval=t_eval, method=ode_method
+    )
+
+    _fig, _ax1 = plt.subplots(figsize=(8, 5))
+
+    # Plot Temperature vs Time
+
+    _ax1.plot(sol_cooling.t, sol_cooling.y[1])
+    _ax1.axvline(t1, linestyle="--")
+    _ax1.set_xlabel("Time")
+    _ax1.set_ylabel("Temperature")
+    _ax1.set_title("Temperature vs Time")
+    _ax1.grid()
 
     _fig
     return
