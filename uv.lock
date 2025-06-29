@@ -311,6 +311,7 @@ dependencies = [
     { name = "numpy" },
     { name = "ruff" },
     { name = "scipy" },
+    { name = "symbolica" },
 ]
 
 [package.metadata]
@@ -321,6 +322,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.3.1" },
     { name = "ruff", specifier = ">=0.12.1" },
     { name = "scipy", specifier = ">=1.16.0" },
+    { name = "symbolica", specifier = ">=0.17.0" },
 ]
 
 [[package]]
@@ -645,6 +647,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0a/69/662169fdb92fb96ec3eaee218cf540a629d629c86d7993d9651226a6789b/starlette-0.47.1.tar.gz", hash = "sha256:aef012dd2b6be325ffa16698f9dc533614fb1cebd593a906b90dc1025529a79b", size = 2583072, upload-time = "2025-06-21T04:03:17.337Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/82/95/38ef0cd7fa11eaba6a99b3c4f5ac948d8bc6ff199aabd327a29cc000840c/starlette-0.47.1-py3-none-any.whl", hash = "sha256:5e11c9f5c7c3f24959edbf2dffdc01bba860228acf657129467d8a7468591527", size = 72747, upload-time = "2025-06-21T04:03:15.705Z" },
+]
+
+[[package]]
+name = "symbolica"
+version = "0.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/59/53/356e70fccdd3ca749d943f85173772dbb396a19f12022829c8c20e9ab769/symbolica-0.17.0.tar.gz", hash = "sha256:0e82d167774d3504f58fe0e46201e8ed5697696289554e213b72498e6bb37d1d", size = 774567, upload-time = "2025-06-11T12:28:05.719Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/44/36230e65d0e3b7b4dcb198e6c4a83fce7eb286cbe2b787b01d190285b0ba/symbolica-0.17.0-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:7c659ab4f2d20b58da56bfe19054584ecb1c49536bad937b4062c30e8fab5612", size = 9757569, upload-time = "2025-06-11T12:28:19.276Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/37/064166e8a63004f8d91cc1ff3ffbd1a0f7c8e99fffa9b796e6eab9851d41/symbolica-0.17.0-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:6ebea883dea378ff54d23474bd1d301478d310dad16b7ade0b380225cf651ad5", size = 8224424, upload-time = "2025-06-11T12:28:30.764Z" },
+    { url = "https://files.pythonhosted.org/packages/05/a2/10f83eae3315bd4ba2c427105195bad4912b5752292213c85fdd2fb2c764/symbolica-0.17.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b8d24f635d4dcea74b0a4ad90c341b6ee37b995eff7006f3c78ed1c4e2cdb57", size = 9819842, upload-time = "2025-06-11T12:28:38.251Z" },
+    { url = "https://files.pythonhosted.org/packages/75/54/3d4898f1254b10fc7b766fded80803b3368e85ac998eedb5978cf6b1c7b0/symbolica-0.17.0-cp37-abi3-win_amd64.whl", hash = "sha256:b614cfdba3d502cf051f974fbb885c85b8f02804b0a5c553dc8838a85498b7cc", size = 9553937, upload-time = "2025-06-11T14:51:41.768Z" },
 ]
 
 [[package]]
