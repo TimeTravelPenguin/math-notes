@@ -773,5 +773,20 @@ def _(T0, V0, ode_cooling, ode_method, plt, solve_ivp, t1, t_eval, t_final):
     return
 
 
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ---
+
+    Additional interactive plots:
+
+    - Original model: https://www.desmos.com/calculator/zimbb5xwzv
+    - Extended model: https://www.desmos.com/calculator/sx7lxvfemj
+    """
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()
