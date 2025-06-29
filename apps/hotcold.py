@@ -676,7 +676,7 @@ def _(mo):
     $$
         T(t) = \begin{cases}
             \displaystyle T_m + \frac{R}{kV(t)}(T_H-T_m) \left( 1 - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt} & \text{if } 0 \le t \le t_1 \\[1.5em]
-            \displaystyle T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) + \frac{R}{kV(t)}(T_H-T_m) \left(e^{-k(t-t_1)}  - e^{-kt} \right) -  \frac{V_0}{V(t)} (T_m - T_0) e^{-kt} & \text{if } t \gt t_1
+            \displaystyle T_m + \frac{R}{kV(t)} (T_C - T_m) \left(1 - e^{-k(t - t_1)} \right) - \frac{V_0}{V(t)} (T_m - T_0) e^{-kt} + \frac{R}{kV(t)}(T_H-T_m) \left(e^{-k(t-t_1)} - e^{-kt} \right) & \text{if } t \gt t_1
         \end{cases}
     $$
     """
