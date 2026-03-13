@@ -42,4 +42,4 @@ jobs:
       - name: Run build script
         run: just build
 
-      - run: mkdocs gh-deploy --force
+      - run: uv run mkdocs gh-deploy --force
