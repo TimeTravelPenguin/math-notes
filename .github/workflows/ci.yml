@@ -39,7 +39,5 @@ jobs:
       - name: Syncing UV environment
         run: uv sync
 
-      - name: Run build script
-        run: just build
-
-      - run: uv run mkdocs gh-deploy --force
+      - name: Run deploy script
+        run: just gh-deploy
