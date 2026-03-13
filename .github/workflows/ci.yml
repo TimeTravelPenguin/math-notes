@@ -26,7 +26,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install Just
-      - uses: extractions/setup-just@v3
+        uses: extractions/setup-just@v3
 
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
       - uses: actions/cache@v4
@@ -36,10 +36,10 @@ jobs:
           restore-keys: |
             mkdocs-material-
 
-      - name: Syncing uv environment
-      - run: uv sync
+      - name: Syncing UV environment
+        run: uv sync
 
       - name: Run build script
-      - run: just build
+        run: just build
 
       - run: mkdocs gh-deploy --force
