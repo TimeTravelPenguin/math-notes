@@ -1,0 +1,174 @@
+# Roadmap
+
+This page serves as a general guide to the various topics and subjects that I
+wish to write about. This list is likely to change and new points may be added
+or removed at any time.
+
+## Ordinary Differential Equations
+
+- [ ] Modelling with first-order ODEs
+    - [ ] First-order separable differential equations
+        - [ ] Radioactive decay
+        - [ ] Newton's law of cooling or heating
+- [ ] Existence, uniqueness, and first-order methods
+    - [ ] Order and degree of differential equations
+    - [ ] Existence and uniqueness
+    - [ ] Solution methods
+        - [ ] Separable equations
+        - [ ] Linear equations
+        - [ ] Exact differential equations
+- [ ] Higher-order ODEs
+    - [ ] Linear differential equations
+    - [ ] Existence and uniqueness for higher-order linear IVPs
+    - [ ] Linear independence
+    - [ ] Wronskian
+    - [ ] Applications
+        - [ ] Beam deflection
+- [ ] Systems of ODEs
+    - [ ] Solving by elimination
+    - [ ] Autonomous systems
+- [ ] Numerical ODEs
+    - [ ] Direction fields
+    - [ ] Euler's method
+    - [ ] Runge–Kutta methods
+    - [ ] Taylor series of two variables
+
+## Partial Differential Equations
+
+- [ ] Foundations and classification
+    - [ ] Linear partial differential equations
+        - [ ] Principle of superposition
+        - [ ] Nonhomogeneous equations
+        - [ ] First-order linear equations
+    - [ ] Second-order linear partial differential equations
+        - [ ] Classification of a second-order linear PDE
+        - [ ] Classification with multiple independent variables
+- [ ] Characteristics
+    - [ ] Initial value problems and method of characteristics
+        - [ ] Method of characteristics
+            - [ ] Homogeneous first-order linear PDEs
+            - [ ] Nonhomogeneous first-order linear PDEs
+            - [ ] Multiple independent variables
+        - [ ] Solving initial value problems
+- [ ] Heat, wave, and Laplace equations
+    - [ ] Modelling with partial differential equations
+        - [ ] Conservation laws and the heat equation
+        - [ ] One-dimensional wave equation
+    - [ ] Separation of variables for the wave equation
+        - [ ] One-dimensional wave equation
+        - [ ] Vibration of a rectangular membrane
+            - [ ] Three ordinary differential equations from the wave equation
+            - [ ] Boundary conditions
+            - [ ] Solution of the wave equation
+    - [ ] Laplace equation
+        - [ ] Dirichlet problem
+        - [ ] Superposition principle
+    - [ ] Poisson equations
+        - [ ] Laplace equation in polar coordinates
+        - [ ] Three-dimensional Laplacian in cylindrical and spherical coordinates
+        - [ ] Separation of variables for Laplace equation
+    - [ ] Additional wave equation methods
+        - [ ] Radially symmetric solutions
+        - [ ] D'Alembert's solution
+- [ ] Boundary value problems
+    - [ ] Initial and boundary conditions
+        - [ ] Initial conditions
+        - [ ] Boundary conditions
+            - [ ] Types of boundary conditions
+    - [ ] Well-posed problems
+- [ ] Separation of variables and Fourier methods
+    - [ ] Separation of variables for the heat equation and Fourier series
+        - [ ] Separation of variables for the heat equation
+        - [ ] Fourier series
+        - [ ] Examples: separation of variables for heat equations
+        - [ ] Nonhomogeneous boundary value problems
+        - [ ] Heat flow in a circular wire
+        - [ ] Temperature in a rectangular plate
+- [ ] Laplace transforms
+    - [ ] Introduction to Laplace transforms
+    - [ ] Solution of PDEs by Laplace transform
+    - [ ] Table of Laplace transforms
+- [ ] PDE numerical methods
+    - [ ] Finite difference method
+    - [ ] Jacobi method
+    - [ ] Gauss–Seidel method
+    - [ ] Successive over-relaxation
+
+## Numerical Methods
+
+- [ ] Floating point and error analysis
+    - [ ] Computer arithmetic
+    - [ ] Interpolation
+- [ ] Nonlinear equations
+    - [ ] Preliminaries
+    - [ ] Bisection method
+    - [ ] Fixed-point methods
+    - [ ] Comparison of methods
+    - [ ] Aitken acceleration
+    - [ ] Systems of nonlinear equations
+- [ ] Linear systems
+    - [ ] Preliminaries
+        - [ ] Rectangular linear systems
+        - [ ] Square nonsingular linear systems
+    - [ ] Solving systems of linear equations
+        - [ ] Gaussian elimination
+        - [ ] Forward elimination
+        - [ ] Back substitution
+- [ ] Numerical differentiation and integration
+    - [ ] Numerical differentiation
+    - [ ] General formulae
+    - [ ] Numerical integration
+- [ ] Least squares
+    - [ ] Linear least-squares approximation
+    - [ ] Least-squares for linear systems
+- [ ] Eigenvalues
+    - [ ] Eigenvalues and eigenvectors
+    - [ ] Applications
+
+## Fourier Analysis
+
+- [ ] Functional analysis foundations
+    - [ ] Separation of Variables
+	- [ ] Atomic decompositions
+    - [ ] Normed spaces and inner product spaces
+	    - [ ] Norms
+	    - [ ] Inner products
+	    - [ ] The Cauchy-Schwarz inequality
+	    - [ ] More inner product spaces
+	- [ ] Topology of Normed Linear Spaces and Convergence
+	    - [ ] Open and closed sets
+	    - [ ] Convergence
+	- [ ] Completeness
+	    - [ ] Cauchy sequences
+	    - [ ] Hilbert spaces
+	- [ ] Linear Operators
+        - [ ] Continuity and boundedness
+	    - [ ] Riesz representation theorem and adjoint mappings
+	    - [ ] Self-adjoint and unitary mappings
+    - [ ] Lebesgue Integral
+        - [ ] Lebesgue measure
+        - [ ] Measurable functions and the Lebesgue integral
+        - [ ] Lebesgue spaces
+- [ ] Fourier series
+	- [ ] Orthogonality
+	- [ ] General Fourier series
+	- [ ] Trigonometric Fourier series on the real line
+- [ ] Fourier transform
+	- [ ] The $L^1$ Fourier transform
+	- [ ] The Schwarz space
+	- [ ] Fourier integrals
+	- [ ] The $L^2$ Fourier transform
+	- [ ] Convolution
+	- [ ] Covariances of the Fourier transform
+	- [ ] Application to Partial Differential Equations
+        - [ ] Heat Flow on the line
+        - [ ] Wave Motion on the line
+	- [ ] Sampling
+	- [ ] Uncertainty
+- [ ] Time-frequency methods
+	- [ ] Problems with the Fourier transform
+	- [ ] The Short-time Fourier transform
+- [ ] Wavelets
+    - [ ] Continuous wavelet transform
+	- [ ] Discrete wavelet transform
+	- [ ] Wavelet decompositions

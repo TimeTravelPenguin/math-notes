@@ -1,0 +1,29 @@
+[project]
+name = "math-notes"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=6.0.0",
+    "anthropic>=0.84.0",
+    "marimo>=0.20.4",
+    "matplotlib>=3.10.8",
+    "mcp>=1.26.0",
+    # "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.5",
+    "pandas>=3.0.1",
+    "pyarrow>=23.0.1",
+    "pydantic-ai-slim>=1.68.0",
+    "scipy[doc]>=1.17.1",
+    "wigglystuff>=0.2.37",
+]
+
+[dependency-groups]
+dev = [
+    "python-lsp-ruff>=2.3.0",
+    "python-lsp-server>=1.14.0",
+    "vegafusion>=2.0.3",
+    "vl-convert-python>=1.9.0.post1",
+    "websockets>=16.0",
+]
