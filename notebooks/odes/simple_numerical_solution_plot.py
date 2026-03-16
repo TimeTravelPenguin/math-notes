@@ -18,21 +18,18 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from scipy.integrate import solve_ivp
-    from wigglystuff.chart_puck import ChartPuck
 
-    return ChartPuck, mo, np, plt, solve_ivp
+    return (mo,)
 
 
 @app.cell
-def _(np):
-    def ode_rhs(t: float, y: np.ndarray) -> np.ndarray:
-        """dy/dt = y^2 - 3t^2 + 1."""
-        return np.array([y[0] ** 2 - 3 * t**2 + 1])
+def _():
+    from wigglystuff.chart_puck import ChartPuck
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from scipy.integrate import solve_ivp
 
-    return (ode_rhs,)
+    return ChartPuck, np, plt, solve_ivp
 
 
 @app.cell(hide_code=True)
@@ -42,7 +39,7 @@ def _(mo):
 
     Drag the red initial-condition point to explore solutions of
 
-    $$\frac{dy}{dt} = y^2 - 3t^2 + 1$$
+    $$\frac{dy}{dt} = \frac{1}{2}y^2 - 5t^2 + 1$$
 
     The solver integrates forward (blue) and backward (orange) in time
     from the current initial condition.
@@ -62,9 +59,9 @@ def _(ChartPuck, np, ode_rhs, plt, solve_ivp):
         # --- Direction field (quiver plot) ---
         _t_grid: np.ndarray = np.linspace(X_MIN, X_MAX, 25)
         _y_grid: np.ndarray = np.linspace(Y_MIN, Y_MAX, 25)
-        _T, _Y = np.meshgrid(_t_grid, _y_grid)
+        _T, _Y = np.meshgrid(_t_grid, _y_grid)  # Shape (25, 25) each
         _dT: np.ndarray = np.ones_like(_T)  # dt/dt = 1
-        _dY: np.ndarray = _Y - _T**2 + 1  # dy/dt = y - t^2 + 1
+        _dY: np.ndarray = ode_rhs(_T, _Y).squeeze()  # dy/dt from the ODE
 
         # Normalize arrows so they all have the same length
         _speed: np.ndarray = np.sqrt(_dT**2 + _dY**2)
@@ -127,12 +124,21 @@ def _(ChartPuck, np, ode_rhs, plt, solve_ivp):
 
 
 @app.cell
+def _(np):
+    def ode_rhs(t: float, y: np.ndarray) -> np.ndarray:
+        """dy/dt = 0.5 y^2 - 5t^2 + 1."""
+        return np.array([0.5 * y**2 - 5 * t**2 + 1])
+
+    return (ode_rhs,)
+
+
+@app.cell
 def _(ChartPuck, draw_ode_soln):
     dynamic_puck = ChartPuck.from_callback(
         draw_fn=draw_ode_soln,
         x_bounds=(-3, 3),
         y_bounds=(-5, 5),
-        figsize=(8, 5),
+        figsize=(10, 6),
         x=0,
         y=0,
         puck_color="red",
